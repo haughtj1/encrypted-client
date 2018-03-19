@@ -8,4 +8,4 @@ To run the code, you must compile into a jar file and then run the command...
 ```
 java -jar jarname.jar arg0 arg1   
 ```    
-...where arg0 is the IP address of the server process and arg1 is the port number that the server process is listening on. 
+...where arg0 is the IP address of the server process and arg1 is the port number that the server process is listening on. Server should running before the client. 
