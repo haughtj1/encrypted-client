@@ -1,4 +1,4 @@
-Author: Justin Haughton<haughtj1@tcnj.edu>     
+Author: Justin Haughton <haughtj1@tcnj.edu>     
      
 ## encrypted-client    
     
