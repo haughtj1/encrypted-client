@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.Socket;
 
 public class EncryptedClient {
@@ -42,19 +43,28 @@ public class EncryptedClient {
 			System.out.println("[Client] Attempting to connect to " + ip + ":" + port);	
 			try {
 				Socket socket = new Socket(ip, port);
+				byte[] buf = new byte[5096];
 				
 				DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 				BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
-				sendMessage = "Hello World!\n";
+				//the client first request the key from the server process
+				sendMessage = "KEYREQ\n";
 				output.writeBytes(sendMessage);
 				sendMessage = "";
 				System.out.println("[Client] Message sent to server.");
-				
 				System.out.println("[Client] Waiting for responce from server.");
+				
+				//the keypair is then read in
 				receivedMessage = input.readLine();
-				System.out.println("[Client] Response from server: " + receivedMessage);
+				String tmp = receivedMessage.substring(0, receivedMessage.indexOf(":"));
+				BigInteger e = new BigInteger(tmp);
+				tmp = receivedMessage.substring(receivedMessage.indexOf(":"));
+				BigInteger n = new BigInteger(tmp);
 				receivedMessage = "";
+				
+				//now we can encrypt and send our messages
+				BigInteger enc = new BigInteger("REQUEST PRIVATE INFO".getBytes());
 				
 				socket.close();
 			} catch (IOException e) {
