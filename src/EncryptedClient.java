@@ -7,8 +7,8 @@ import java.net.Socket;
 
 public class EncryptedClient {
 	public static void main(String sa[]) {
-		String receivedMessage = "";
-		String sendMessage = "";
+		String inputBuf = "";
+		String outputBuf = "";
 		int port = 0;
 		String ip = "";
 		
@@ -49,22 +49,27 @@ public class EncryptedClient {
 				BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
 				//the client first request the key from the server process
-				sendMessage = "KEYREQ\n";
-				output.writeBytes(sendMessage);
-				sendMessage = "";
-				System.out.println("[Client] Message sent to server.");
-				System.out.println("[Client] Waiting for responce from server.");
+				outputBuf = "KEYREQ\n";
+				output.writeBytes(outputBuf);
+				outputBuf = "";
+				System.out.println("[Client] Public Key Requested.");
 				
 				//the keypair is then read in
-				receivedMessage = input.readLine();
-				String tmp = receivedMessage.substring(0, receivedMessage.indexOf(":"));
+				inputBuf = input.readLine();
+				String tmp = inputBuf.substring(0, inputBuf.indexOf(":"));
 				BigInteger e = new BigInteger(tmp);
-				tmp = receivedMessage.substring(receivedMessage.indexOf(":"));
+				tmp = inputBuf.substring(inputBuf.indexOf(":") + 1);
 				BigInteger n = new BigInteger(tmp);
-				receivedMessage = "";
+				inputBuf = "";				
 				
 				//now we can encrypt and send our messages
-				BigInteger enc = new BigInteger("REQUEST PRIVATE INFO".getBytes());
+				String privateMessage = "THIS INFORMATION IS PRIVATE 946840";
+				System.out.println("[Client] Now sending our secret message [" + privateMessage + "]");
+				BigInteger enc = new BigInteger(privateMessage.getBytes());
+				enc = enc.modPow(e, n);
+				outputBuf = enc.toString() + "\n";
+				output.writeBytes(outputBuf);	
+				System.out.println("[Client] Secret message sent, closing connection.");
 				
 				socket.close();
 			} catch (IOException e) {
