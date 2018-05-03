@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.util.Random;
 
 public class EncryptedClient {
+	private static Random rand;
 	public static void main(String sa[]) {
+		rand = new Random(System.currentTimeMillis());
+		int pad = 0;
 		String inputBuf = "";
 		String outputBuf = "";
 		int port = 0;
@@ -64,6 +68,13 @@ public class EncryptedClient {
 				
 				//now we can encrypt and send our messages
 				String privateMessage = "THIS INFORMATION IS PRIVATE 946840";
+				
+				for(int i = 0; i < 3; i++) {
+					pad = randPad();
+					privateMessage = padString(privateMessage, pad);
+					System.out.println(privateMessage);
+				}
+				
 				System.out.println("[Client] Now sending our secret message [" + privateMessage + "]");
 				BigInteger enc = new BigInteger(privateMessage.getBytes());
 				enc = enc.modPow(e, n);
@@ -80,5 +91,33 @@ public class EncryptedClient {
 			System.out.println("Arguments may only include IP address of server process, and port number.");
 			return;
 		}
+	}
+	
+	public static int randPad() {
+		return rand.nextInt(9) + 1;
+	}
+	
+	public static char randChar() {
+		final String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+=-<>,~";
+		final int N = alphabet.length();
+		return alphabet.charAt(rand.nextInt(N));
+	}
+	
+	public static String padString(String text, int pad) {
+		
+		StringBuilder sb = new StringBuilder(text.length() + (text.length()/pad) + 1);
+
+		int index = 0;
+		char prefix = Character.MIN_VALUE;
+		while(index < text.length()) {
+			sb.append(prefix);
+			prefix = randChar();
+			sb.append(text.substring(index, Math.min(index + pad, text.length())));
+			index += pad;
+		}
+		
+		sb.insert(0, pad);
+		
+		return sb.toString();	
 	}
 }
