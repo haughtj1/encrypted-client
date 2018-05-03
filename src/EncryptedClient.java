@@ -68,12 +68,13 @@ public class EncryptedClient {
 				
 				//now we can encrypt and send our messages
 				String privateMessage = "THIS INFORMATION IS PRIVATE 946840";
+				System.out.println("[Client] Secret message is: " + privateMessage);
 				
 				for(int i = 0; i < 3; i++) {
 					pad = randPad();
 					privateMessage = padString(privateMessage, pad);
-					System.out.println(privateMessage);
 				}
+				System.out.println("[Client] Message with padding: " + privateMessage);
 				
 				System.out.println("[Client] Now sending our secret message [" + privateMessage + "]");
 				BigInteger enc = new BigInteger(privateMessage.getBytes());
